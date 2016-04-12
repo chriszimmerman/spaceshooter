@@ -4,47 +4,59 @@ var canvasHeight = canvas.getAttribute("height");
 var context = canvas.getContext("2d");
 var FPS = 30;
 
-var ship = { 
-	moveSpeed: 5,
-	width: 40,
-	height: 40,
-	X: (canvasWidth / 2) - (40 / 2),
-	Y: 320,
-	draw: function() {
-		context.beginPath();
-		context.fillStyle = "#ff8d00";
-		context.rect(this.X + 15, this.Y, 10, 40);
-		context.fill();
-		context.rect(this.X, this.Y + 15, 40, 20);
-		context.fill();
-	},
-	moveRight: function() {
-		this.X += this.moveSpeed;
-	},
-	moveLeft: function() {
-		this.X -= this.moveSpeed;
-	},
-	moveUp: function() {
-		this.Y -= this.moveSpeed;
-	},
-	moveDown: function() {
-		this.Y += this.moveSpeed;
-	},
-	clamp: function() {
-		if(this.X < 0) {
-			this.X = 0;
-		}
-		if(this.X + this.width > canvasWidth) {
-			this.X = canvasWidth - this.width;
-		}
-		if(this.Y < 0) {
-			this.Y = 0;
-		}
-		if(this.Y + this.height > canvasHeight) {
-			this.Y = canvasHeight - this.height;
+var Ship = class {
+	constructor(canvasWidth, canvasHeight) {
+		this.canvasWidth = canvasWidth;
+		this.canvasHeight = canvasHeight;
+		this.moveSpeed = 5;
+		this.width = 40;
+		this.height = 40;
+		this.xPosition = (canvasWidth / 2) - (40 / 2);
+		this.yPosition = 320;
+
+		this.draw = function() {
+			context.beginPath();
+			context.fillStyle = "#ff8d00";
+			context.rect(this.xPosition + 15, this.yPosition, 10, 40);
+			context.fill();
+			context.rect(this.xPosition, this.yPosition + 15, 40, 20);
+			context.fill();
+		};
+
+		this.moveRight = function() {
+			this.xPosition += this.moveSpeed;
+		};
+
+		this.moveLeft = function() {
+			this.xPosition -= this.moveSpeed;
+		};
+
+		this.moveUp = function() {
+			this.yPosition -= this.moveSpeed;
+		},
+
+		this.moveDown = function() {
+			this.yPosition += this.moveSpeed;
+		};
+
+		this.clamp = function() {
+			if(this.xPosition < 0) {
+				this.xPosition = 0;
+			}
+			if(this.xPosition + this.width > this.canvasWidth) {
+				this.xPosition = this.canvasWidth - this.width;
+			}
+			if(this.yPosition < 0) {
+				this.yPosition = 0;
+			}
+			if(this.yPosition + this.height > this.canvasHeight) {
+				this.yPosition = this.canvasHeight - this.height;
+			}
 		}
 	}
 };
+
+var ship = new Ship(canvasWidth, canvasHeight);
 
 function drawBackground() {
 	context.beginPath();
