@@ -47,6 +47,10 @@ var Ship = class {
 			if(this.yPosition + this.height > this.canvasHeight) {
 				this.yPosition = this.canvasHeight - this.height;
 			}
+		};
+
+		this.shoot = function() {
+			return new Projectile(this.xPosition, this.yPosition, this.canvasWidth, this.canvasHeight, this.context);
 		}
 	}
 };
