@@ -6,8 +6,8 @@ var Projectile = class {
 		this.yPosition = yPosition;
 		this.xVelocity = 0;
 		this.yVelocity = -5;
-		this.width = 3;
-		this.height = 3;
+		this.width = 10;
+		this.height = 10;
 		this.color = "#FFF";
 
 		this.inBounds = function() {
@@ -16,8 +16,10 @@ var Projectile = class {
 		};
 
 		this.draw = function() {
+			var xOffset = 15;
+			var yOffset = -5;
 			canvas.fillStyle = this.color;
-			canvas.fillRect(this.xPosition, this.yPosition, this.width, this.height);
+			canvas.fillRect(this.xPosition + xOffset, this.yPosition + yOffset, this.width, this.height);
 		};
 
 		this.update = function() {
