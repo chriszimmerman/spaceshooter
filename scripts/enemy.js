@@ -1,5 +1,6 @@
 var Enemy = class {
 	constructor() {
+		this.active = true;
 		this.moveSpeed = 5;
 		this.width = 40;
 		this.height = 40;

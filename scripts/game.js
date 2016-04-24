@@ -11,7 +11,8 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 	var ship = new Ship();
 	var enemy = new Enemy();
 	var background = new Background();
-	var projectiles = [];
+	var playerProjectiles = [];
+	var enemyProjectiles = [];
 
 	function update() {
 		if(Key.isDown(Key.RIGHT)) {
@@ -36,17 +37,25 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 
 		if(Key.isDown(Key.SPACE)) {
 			if(framesSinceLastFired > shipFireThreshold) {
-				projectiles.push(ship.shoot());
-				projectiles.push(enemy.shoot());
+				playerProjectiles.push(ship.shoot());
+				enemyProjectiles.push(enemy.shoot());
 				framesSinceLastFired = 0;
 			}
 		}
 
-		projectiles.forEach(function(projectile) {
+		playerProjectiles.forEach(function(projectile) {
 			projectile.update();
 		});
 
-		projectiles = projectiles.filter(function(p) { return p.active; });
+		playerProjectiles = playerProjectiles.filter(function(p) { return p.active; });
+
+		enemyProjectiles.forEach(function(projectile) {
+			projectile.update();
+		});
+
+		enemyProjectiles = enemyProjectiles.filter(function(p) { return p.active; });
+
+		handleCollisions();
 	}
 
 	function draw() {
@@ -55,9 +64,36 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		ship.draw();
 		enemy.draw();
 		
-		projectiles.forEach(function(projectile) {
+		playerProjectiles.forEach(function(projectile) {
 			projectile.draw();
 		});
+
+		enemyProjectiles.forEach(function(projectile) {
+			projectile.draw();
+		});
+	}
+
+	function handleCollisions() {
+		playerProjectiles.forEach(function(projectile) {
+			if(collides(projectile, enemy)) {
+				console.log("Player hit enemy");
+				enemy.active = false;
+			}
+		});
+
+		enemyProjectiles.forEach(function(projectile) {
+			if(collides(projectile, ship)) {
+				console.log("Enemy hit player");
+				ship.active = false;
+			}
+		});
+	}
+
+	function collides(sprite1, sprite2) {
+		return sprite1.xPosition < sprite2.xPosition + sprite2.width 
+			&& sprite1.xPosition + sprite1.width > sprite2.xPosition
+			&& sprite1.yPosition < sprite2.yPosition + sprite2.height
+			&& sprite1.yPosition + sprite1.height > sprite2.yPosition;
 	}
 
 	setInterval(function() {
