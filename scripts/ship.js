@@ -1,8 +1,5 @@
 var Ship = class {
-	constructor(canvasWidth, canvasHeight, context) {
-		this.context = context;
-		this.canvasWidth = canvasWidth;
-		this.canvasHeight = canvasHeight;
+	constructor() {
 		this.moveSpeed = 5;
 		this.width = 40;
 		this.height = 40;
@@ -10,12 +7,12 @@ var Ship = class {
 		this.yPosition = 320;
 
 		this.draw = function() {
-			this.context.beginPath();
-			this.context.fillStyle = "#ff8d00";
-			this.context.rect(this.xPosition + 15, this.yPosition, 10, 40);
-			this.context.fill();
-			this.context.rect(this.xPosition, this.yPosition + 15, 40, 20);
-			this.context.fill();
+			context.beginPath();
+			context.fillStyle = "#ff8d00";
+			context.rect(this.xPosition + 15, this.yPosition, 10, 40);
+			context.fill();
+			context.rect(this.xPosition, this.yPosition + 15, 40, 20);
+			context.fill();
 		};
 
 		this.moveRight = function() {
@@ -38,19 +35,20 @@ var Ship = class {
 			if(this.xPosition < 0) {
 				this.xPosition = 0;
 			}
-			if(this.xPosition + this.width > this.canvasWidth) {
-				this.xPosition = this.canvasWidth - this.width;
+			if(this.xPosition + this.width > canvasWidth) {
+				this.xPosition = canvasWidth - this.width;
 			}
 			if(this.yPosition < 0) {
 				this.yPosition = 0;
 			}
-			if(this.yPosition + this.height > this.canvasHeight) {
-				this.yPosition = this.canvasHeight - this.height;
+			if(this.yPosition + this.height > canvasHeight) {
+				this.yPosition = canvasHeight - this.height;
 			}
 		};
 
 		this.shoot = function() {
-			return new Projectile(this.xPosition, this.yPosition, this.canvasWidth, this.canvasHeight, this.context);
+			var xOffset = 15;
+			return new Projectile(this.xPosition + xOffset, this.yPosition);
 		}
 	}
 };

@@ -1,5 +1,5 @@
 var Projectile = class {
-	constructor(xPosition, yPosition, canvasWidth, canvasHeight, canvas) {
+	constructor(xPosition, yPosition) {
 		this.active = true;
 
 		this.xPosition = xPosition;
@@ -16,10 +16,8 @@ var Projectile = class {
 		};
 
 		this.draw = function() {
-			var xOffset = 15;
-			var yOffset = -5;
-			canvas.fillStyle = this.color;
-			canvas.fillRect(this.xPosition + xOffset, this.yPosition + yOffset, this.width, this.height);
+			context.fillStyle = this.color;
+			context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
 		};
 
 		this.update = function() {
