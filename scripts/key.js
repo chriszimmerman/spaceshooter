@@ -1,3 +1,5 @@
+// I did not write the code in this file. Credit goes to Daniel X. Moore
+// at http://www.html5rocks.com/en/tutorials/canvas/notearsgame/#toc-hello-world
 var Key = {
 	_pressed: {},
 
