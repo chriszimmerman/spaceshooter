@@ -1,14 +1,15 @@
 var Projectile = class {
-	constructor(xPosition, yPosition) {
+	constructor(xPosition, yPosition, direction, color) {
+		var speed = 5;
 		this.active = true;
 
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
 		this.xVelocity = 0;
-		this.yVelocity = -5;
+		this.yVelocity = direction === Direction.UP ? speed * -1 : speed * 1;
 		this.width = 10;
 		this.height = 10;
-		this.color = "#FFF";
+		this.color = color;
 
 		this.inBounds = function() {
 			return this.xPosition >= 0 && this.xPosition <= canvasWidth &&

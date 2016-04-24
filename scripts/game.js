@@ -69,10 +69,16 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 requirejs.config({
 	shim: {
 		'game': {
-			deps: ['ship', 'key', 'background']
+			deps: ['ship', 'key', 'background', 'enemy']
+		},
+		'enemy': {
+			deps: ['projectile']
 		},
 		'ship': { 
 			deps: ['projectile']
+		},
+		'projectile': {
+			deps: ['direction', 'color']
 		}
 	}
 });

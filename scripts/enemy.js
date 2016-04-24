@@ -43,7 +43,7 @@ var Enemy = class {
 		this.shoot = function() {
 			var xOffset = 15;
 			var yOffset = 20;
-			return new Projectile(this.xPosition + xOffset, this.yPosition + yOffset);
+			return new Projectile(this.xPosition + xOffset, this.yPosition + yOffset, Direction.DOWN, Color.RED);
 		}
 	}
 };

@@ -48,7 +48,7 @@ var Ship = class {
 
 		this.shoot = function() {
 			var xOffset = 15;
-			return new Projectile(this.xPosition + xOffset, this.yPosition);
+			return new Projectile(this.xPosition + xOffset, this.yPosition, Direction.UP, Color.WHITE);
 		}
 	}
 };
