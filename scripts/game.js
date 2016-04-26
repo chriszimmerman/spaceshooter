@@ -5,8 +5,12 @@ var context = canvas.getContext("2d");
 
 require(["ship", "key", "background", "enemy"], function(a, b, c){
 	var FPS = 30;
-	var framesSinceLastFired = 0;
-	var shipFireThreshold = 5;
+	var framesSinceShipLastFired = 0;
+	var framesSinceEnemyLastFired = 0;
+	var shipFireThreshold = 20; 
+	var minEnemyWaitTime = 5;
+	var maxEnemyWaitTime = 20;
+	var enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
 
 	var ship = new Ship();
 	var enemy = new Enemy();
@@ -23,24 +27,23 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 			ship.moveLeft();
 		}
 
-		if(Key.isDown(Key.UP)) {
-			ship.moveUp();
-		}
-
-		if(Key.isDown(Key.DOWN)) {
-			ship.moveDown();
-		}
 		ship.clamp();
 		enemy.move();
 
-		framesSinceLastFired++;
+		framesSinceShipLastFired++;
+		framesSinceEnemyLastFired++;
 
 		if(Key.isDown(Key.SPACE)) {
-			if(framesSinceLastFired > shipFireThreshold) {
+			if(framesSinceShipLastFired > shipFireThreshold) {
 				playerProjectiles.push(ship.shoot());
-				enemyProjectiles.push(enemy.shoot());
-				framesSinceLastFired = 0;
+				framesSinceShipLastFired = 0;
 			}
+		}
+		
+		if(framesSinceEnemyLastFired > enemyFireThreshold) {
+			enemyProjectiles.push(enemy.shoot());
+			enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
+			framesSinceEnemyLastFired = 0;
 		}
 
 		playerProjectiles.forEach(function(projectile) {
@@ -62,7 +65,9 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		context.clearRect(0, 0, canvasWidth, canvasHeight);
 		background.draw();
 		ship.draw();
-		enemy.draw();
+		if(enemy.active) {
+			enemy.draw();
+		}
 		
 		playerProjectiles.forEach(function(projectile) {
 			projectile.draw();
@@ -78,6 +83,7 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 			if(collides(projectile, enemy)) {
 				console.log("Player hit enemy");
 				enemy.active = false;
+				enemy.explode();
 			}
 		});
 
@@ -94,6 +100,10 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 			&& sprite1.xPosition + sprite1.width > sprite2.xPosition
 			&& sprite1.yPosition < sprite2.yPosition + sprite2.height
 			&& sprite1.yPosition + sprite1.height > sprite2.yPosition;
+	}
+
+	function getRandomNumber(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
 	setInterval(function() {

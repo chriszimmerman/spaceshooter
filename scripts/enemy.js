@@ -1,7 +1,7 @@
 var Enemy = class {
 	constructor() {
 		this.active = true;
-		this.moveSpeed = 5;
+		this.moveSpeed = 7;
 		this.width = 40;
 		this.height = 40;
 		this.xPosition = (canvasWidth / 2) - (40 / 2);
@@ -18,6 +18,10 @@ var Enemy = class {
 			context.fillStyle = "#000000";
 			context.rect(this.xPosition + 15, this.yPosition + 15, 10, 10);
 			context.fill();
+		};
+
+		this.explode = function() {
+			//figure out how to do several explosion animations for several frames
 		};
 
 		this.move = function() {

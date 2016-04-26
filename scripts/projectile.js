@@ -1,6 +1,6 @@
 var Projectile = class {
 	constructor(xPosition, yPosition, direction, color) {
-		var speed = 5;
+		var speed = 7;
 		this.active = true;
 
 		this.xPosition = xPosition;
