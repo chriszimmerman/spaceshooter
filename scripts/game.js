@@ -4,7 +4,13 @@ var canvasHeight = canvas.getAttribute("height");
 var context = canvas.getContext("2d");
 
 require(["ship", "key", "background", "enemy"], function(a, b, c){
+	var game;
 	var FPS = 30;
+	//var score = 0;
+	
+	var drawEnemyExplosion = false;
+	var drawShipExplosion = false;
+
 	var framesSinceShipLastFired = 0;
 	var framesSinceEnemyLastFired = 0;
 	var shipFireThreshold = 20; 
@@ -12,9 +18,9 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 	var maxEnemyWaitTime = 20;
 	var enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
 
+	var background = new Background();
 	var ship = new Ship();
 	var enemy = new Enemy();
-	var background = new Background();
 	var playerProjectiles = [];
 	var enemyProjectiles = [];
 
@@ -28,7 +34,10 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		}
 
 		ship.clamp();
-		enemy.move();
+
+		if(enemy.active){
+			enemy.move();
+		}
 
 		framesSinceShipLastFired++;
 		framesSinceEnemyLastFired++;
@@ -40,7 +49,7 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 			}
 		}
 		
-		if(framesSinceEnemyLastFired > enemyFireThreshold) {
+		if(enemy.active && framesSinceEnemyLastFired > enemyFireThreshold) {
 			enemyProjectiles.push(enemy.shoot());
 			enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
 			framesSinceEnemyLastFired = 0;
@@ -65,8 +74,12 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		context.clearRect(0, 0, canvasWidth, canvasHeight);
 		background.draw();
 		ship.draw();
+
 		if(enemy.active) {
 			enemy.draw();
+		}
+		else {
+			enemy.explode();
 		}
 		
 		playerProjectiles.forEach(function(projectile) {
@@ -81,16 +94,15 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 	function handleCollisions() {
 		playerProjectiles.forEach(function(projectile) {
 			if(collides(projectile, enemy)) {
-				console.log("Player hit enemy");
 				enemy.active = false;
-				enemy.explode();
+				enemy.exploding = true;
 			}
 		});
 
 		enemyProjectiles.forEach(function(projectile) {
 			if(collides(projectile, ship)) {
-				console.log("Enemy hit player");
 				ship.active = false;
+				clearInterval(game);
 			}
 		});
 	}
@@ -106,7 +118,7 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
-	setInterval(function() {
+	game = setInterval(function() {
 		update();
 		draw();
 	}, 1000 / FPS);
