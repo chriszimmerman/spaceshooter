@@ -5,26 +5,26 @@ var context = canvas.getContext("2d");
 
 require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var game;
-	var gameOver = false;
+	var gameOver;
 	var FPS = 30;
-	var score = 0;
+	var score;
 	
-	var drawEnemyExplosion = false;
-	var drawShipExplosion = false;
+	var drawEnemyExplosion;
+	var drawShipExplosion;
 
-	var framesSinceShipLastFired = 0;
-	var framesSinceEnemyLastFired = 0;
-	var shipFireThreshold = 20; 
-	var minEnemyWaitTime = 5;
-	var maxEnemyWaitTime = 20;
-	var enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
+	var framesSinceShipLastFired;
+	var framesSinceEnemyLastFired;
+	var shipFireThreshold; 
+	var minEnemyWaitTime;
+	var maxEnemyWaitTime;
+	var enemyFireThreshold;
 
-	var background = new Background();
-	var ship = new Ship();
-	var enemy = new Enemy();
-	var playerProjectiles = [];
-	var enemyProjectiles = [];
-	var explosions = [];
+	var background;
+	var ship;
+	var enemy;
+	var playerProjectiles;
+	var enemyProjectiles;
+	var explosions;
 
 	function initializeGame() {
 		gameOver = false;
@@ -163,6 +163,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		playerProjectiles.forEach(function(projectile) {
 			if(collides(projectile, enemy)) {
 				enemy.active = false;
+				projectile.active = false;
 				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
 				score++;
 				enemy = new Enemy();
