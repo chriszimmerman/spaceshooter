@@ -26,12 +26,14 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var explosions = [];
 
 	function update() {
-		if(Key.isDown(Key.RIGHT)) {
-			ship.moveRight();
-		}
-		
-		if(Key.isDown(Key.LEFT)) {
-			ship.moveLeft();
+		if(ship.active) {
+			if(Key.isDown(Key.RIGHT)) {
+				ship.moveRight();
+			}
+			
+			if(Key.isDown(Key.LEFT)) {
+				ship.moveLeft();
+			}
 		}
 
 		ship.clamp();
@@ -76,7 +78,10 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	function draw() {
 		context.clearRect(0, 0, canvasWidth, canvasHeight);
 		background.draw();
-		ship.draw();
+
+		if(ship.active) {
+			ship.draw();
+		}
 
 		if(enemy.active) {
 			enemy.draw();
@@ -114,9 +119,9 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		});
 
 		enemyProjectiles.forEach(function(projectile) {
-			if(collides(projectile, ship)) {
+			if(collides(projectile, ship) && ship.active) {
 				ship.active = false;
-				clearInterval(game);
+				explosions.push(new Explosion(ship.xPosition, ship.yPosition));
 			}
 		});
 	}
