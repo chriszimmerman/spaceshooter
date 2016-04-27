@@ -26,6 +26,39 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var enemyProjectiles;
 	var explosions;
 
+	function playStartScreen() {
+		background = new Background();
+		background.draw();
+		context.font = "50px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText("Space Shooter", 35, 100);
+		context.font = "30px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText("Press Up to start", 80, 140);
+
+		var titleShip = new Ship();
+		titleShip.xPosition = canvasWidth / 2 - titleShip.width / 2;
+		titleShip.yPosition = canvasHeight / 2 - titleShip.height / 2;
+		titleShip.draw();
+
+		context.font = "20px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText("Spacebar - shoot", 80, 270);
+
+		context.font = "20px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText("Left arrow - move left", 80, 300);
+
+		context.font = "20px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText("Right arrow - move right", 80, 330);
+
+		if(Key.isDown(Key.UP)) {
+			clearInterval(game);
+			initializeGame();
+		}
+	}
+
 	function initializeGame() {
 		gameOver = false;
 		score = 0;
@@ -190,7 +223,9 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
-	initializeGame();
+	game = setInterval(function() {
+		playStartScreen();
+	}, 1000 / FPS);
 });
 
 requirejs.config({
