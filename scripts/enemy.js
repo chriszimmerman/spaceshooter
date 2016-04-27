@@ -4,7 +4,7 @@ var Enemy = class {
 		this.moveSpeed = 7;
 		this.width = 40;
 		this.height = 40;
-		this.xPosition = (canvasWidth / 2) - (40 / 2);
+		this.xPosition = Math.floor(Math.random() * canvasWidth) - this.width;
 		this.yPosition = 40;
 		
 		this.centerX = function() {
