@@ -1,7 +1,7 @@
 var Enemy = class {
 	constructor() {
 		this.active = true;
-		this.moveSpeed = 7;
+		this.moveSpeed = Math.floor(Math.random() * 15) - 7;
 		this.width = 40;
 		this.height = 40;
 		this.xPosition = Math.floor(Math.random() * canvasWidth) - this.width;
