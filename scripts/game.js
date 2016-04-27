@@ -6,7 +6,7 @@ var context = canvas.getContext("2d");
 require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var game;
 	var FPS = 30;
-	//var score = 0;
+	var score = 0;
 	
 	var drawEnemyExplosion = false;
 	var drawShipExplosion = false;
@@ -93,6 +93,14 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		explosions.forEach(function(explosion) {
 			explosion.draw();
 		});
+
+		drawScore();
+	}
+
+	function drawScore() {
+		context.font = "30px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText("Score: " + score, 10, 30);
 	}
 
 	function handleCollisions() {
@@ -100,6 +108,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 			if(collides(projectile, enemy)) {
 				enemy.active = false;
 				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
+				score++;
 				enemy = new Enemy();
 			}
 		});
