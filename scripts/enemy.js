@@ -1,7 +1,5 @@
 var Enemy = class {
 	constructor() {
-		this.explodeFrame = 20;
-		this.exploding = false;
 		this.active = true;
 		this.moveSpeed = 7;
 		this.width = 40;
@@ -28,19 +26,6 @@ var Enemy = class {
 			context.fillStyle = "#000000";
 			context.rect(this.xPosition + 15, this.yPosition + 15, 10, 10);
 			context.fill();
-		};
-
-		this.explode = function() {
-			if(this.exploding && this.explodeFrame > 0) {
-				context.save();
-				context.globalAlpha = 0.05 * this.explodeFrame;
-				context.beginPath();
-				context.arc(this.centerX(), this.centerY(), this.explodeFrame, 0, 2 * Math.PI);
-				context.fillStyle = "#FF0000";
-				context.fill();
-				context.restore();
-				this.explodeFrame--;
-			}
 		};
 
 		this.move = function() {

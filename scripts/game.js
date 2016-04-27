@@ -3,7 +3,7 @@ var canvasWidth = canvas.getAttribute("width");
 var canvasHeight = canvas.getAttribute("height");
 var context = canvas.getContext("2d");
 
-require(["ship", "key", "background", "enemy"], function(a, b, c){
+require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var game;
 	var FPS = 30;
 	//var score = 0;
@@ -23,6 +23,7 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 	var enemy = new Enemy();
 	var playerProjectiles = [];
 	var enemyProjectiles = [];
+	var explosions = [];
 
 	function update() {
 		if(Key.isDown(Key.RIGHT)) {
@@ -68,6 +69,8 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		enemyProjectiles = enemyProjectiles.filter(function(p) { return p.active; });
 
 		handleCollisions();
+
+		explosions = explosions.filter(function(e) { return e.active; });
 	}
 
 	function draw() {
@@ -78,9 +81,6 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		if(enemy.active) {
 			enemy.draw();
 		}
-		else {
-			enemy.explode();
-		}
 		
 		playerProjectiles.forEach(function(projectile) {
 			projectile.draw();
@@ -89,13 +89,18 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 		enemyProjectiles.forEach(function(projectile) {
 			projectile.draw();
 		});
+
+		explosions.forEach(function(explosion) {
+			explosion.draw();
+		});
 	}
 
 	function handleCollisions() {
 		playerProjectiles.forEach(function(projectile) {
 			if(collides(projectile, enemy)) {
 				enemy.active = false;
-				enemy.exploding = true;
+				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
+				enemy = new Enemy();
 			}
 		});
 
@@ -127,7 +132,7 @@ require(["ship", "key", "background", "enemy"], function(a, b, c){
 requirejs.config({
 	shim: {
 		'game': {
-			deps: ['ship', 'key', 'background', 'enemy']
+			deps: ['ship', 'key', 'background', 'enemy', 'explosion']
 		},
 		'enemy': {
 			deps: ['projectile']
