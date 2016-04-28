@@ -41,22 +41,20 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		titleShip.yPosition = canvasHeight / 2 - titleShip.height / 2;
 		titleShip.draw();
 
-		context.font = "20px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("Spacebar - shoot", 80, 270);
-
-		context.font = "20px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("Left arrow - move left", 80, 300);
-
-		context.font = "20px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("Right arrow - move right", 80, 330);
+		printInstruction("Spacebar - shoot", 80, 270);
+		printInstruction("Left arrow - move left", 80, 300);
+		printInstruction("Right arrow - move right", 80, 330);
 
 		if(Key.isDown(Key.UP)) {
 			clearInterval(game);
 			initializeGame();
 		}
+	}
+
+	function printInstruction(text, xPosition, yPosition) {
+		context.font = "20px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText(text, xPosition, yPosition);
 	}
 
 	function initializeGame() {
@@ -120,23 +118,22 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 			framesSinceEnemyLastFired++;
 		}
 
-		playerProjectiles.forEach(function(projectile) {
-			projectile.update();
-		});
-
-		playerProjectiles = playerProjectiles.filter(function(p) { return p.active; });
-
-		enemyProjectiles.forEach(function(projectile) {
-			projectile.update();
-		});
-
-		enemyProjectiles = enemyProjectiles.filter(function(p) { return p.active; });
+		playerProjectiles = updateProjectiles(playerProjectiles);
+		enemyProjectiles = updateProjectiles(enemyProjectiles);
 
 		handleCollisions();
 
 		explosions = explosions.filter(function(e) { return e.active; });
 
 		checkForGameRestart();
+	}
+
+	function updateProjectiles(projectiles) {
+		projectiles.forEach(function(projectile) {
+			projectile.update();
+		});
+
+		return projectiles.filter(function(p) { return p.active; });
 	}
 
 	function checkForGameRestart() {
