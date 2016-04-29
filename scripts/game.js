@@ -4,9 +4,9 @@ var canvasHeight = canvas.getAttribute("height");
 var context = canvas.getContext("2d");
 
 require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
+	var FPS = 30;
 	var game;
 	var gameOver;
-	var FPS = 30;
 	var score;
 	
 	var drawEnemyExplosion;
@@ -41,9 +41,9 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		titleShip.yPosition = canvasHeight / 2 - titleShip.height / 2;
 		titleShip.draw();
 
-		printInstruction("Spacebar - shoot", 80, 270);
-		printInstruction("Left arrow - move left", 80, 300);
-		printInstruction("Right arrow - move right", 80, 330);
+		printControlInstruction("Spacebar - shoot", 80, 270);
+		printControlInstruction("Left arrow - move left", 80, 300);
+		printControlInstruction("Right arrow - move right", 80, 330);
 
 		if(Key.isDown(Key.UP)) {
 			clearInterval(game);
@@ -51,7 +51,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		}
 	}
 
-	function printInstruction(text, xPosition, yPosition) {
+	function printControlInstruction(text, xPosition, yPosition) {
 		context.font = "20px Arial";
 		context.fillStyle = "#FFFFFF";
 		context.fillText(text, xPosition, yPosition);
@@ -85,6 +85,16 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	}
 
 	function update() {
+		updateShip();
+		updateEnemy();
+		playerProjectiles = updateProjectiles(playerProjectiles);
+		enemyProjectiles = updateProjectiles(enemyProjectiles);
+		handleCollisions();
+		explosions = updateExplosions(explosions);
+		checkForGameRestart();
+	}
+
+	function updateShip() {
 		if(ship.active) {
 			if(Key.isDown(Key.RIGHT)) {
 				ship.moveRight();
@@ -105,7 +115,9 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		}
 
 		ship.clamp();
+	}
 
+	function updateEnemy() {
 		if(enemy.active){
 			enemy.move();
 
@@ -117,15 +129,6 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 
 			framesSinceEnemyLastFired++;
 		}
-
-		playerProjectiles = updateProjectiles(playerProjectiles);
-		enemyProjectiles = updateProjectiles(enemyProjectiles);
-
-		handleCollisions();
-
-		explosions = explosions.filter(function(e) { return e.active; });
-
-		checkForGameRestart();
 	}
 
 	function updateProjectiles(projectiles) {
@@ -134,6 +137,41 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		});
 
 		return projectiles.filter(function(p) { return p.active; });
+	}
+
+	function handleCollisions() {
+		playerProjectiles.forEach(function(projectile) {
+			if(collides(projectile, enemy)) {
+				enemy.active = false;
+				projectile.active = false;
+				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
+				score++;
+				enemy = new Enemy();
+			}
+		});
+
+		enemyProjectiles.forEach(function(projectile) {
+			if(collides(projectile, ship) && ship.active) {
+				ship.active = false;
+				explosions.push(new Explosion(ship.xPosition, ship.yPosition));
+				gameOver = true;
+			}
+		});
+	}
+
+	function collides(sprite1, sprite2) {
+		return sprite1.xPosition < sprite2.xPosition + sprite2.width 
+			&& sprite1.xPosition + sprite1.width > sprite2.xPosition
+			&& sprite1.yPosition < sprite2.yPosition + sprite2.height
+			&& sprite1.yPosition + sprite1.height > sprite2.yPosition;
+	}
+
+	function getRandomNumber(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	function updateExplosions(explosions) {
+		return explosions.filter(function(e) { return e.active; });
 	}
 
 	function checkForGameRestart() {
@@ -187,37 +225,6 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		context.font = "30px Arial";
 		context.fillStyle = "#FFFFFF";
 		context.fillText("Press Up to restart", 80, 250);
-	}
-
-	function handleCollisions() {
-		playerProjectiles.forEach(function(projectile) {
-			if(collides(projectile, enemy)) {
-				enemy.active = false;
-				projectile.active = false;
-				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
-				score++;
-				enemy = new Enemy();
-			}
-		});
-
-		enemyProjectiles.forEach(function(projectile) {
-			if(collides(projectile, ship) && ship.active) {
-				ship.active = false;
-				explosions.push(new Explosion(ship.xPosition, ship.yPosition));
-				gameOver = true;
-			}
-		});
-	}
-
-	function collides(sprite1, sprite2) {
-		return sprite1.xPosition < sprite2.xPosition + sprite2.width 
-			&& sprite1.xPosition + sprite1.width > sprite2.xPosition
-			&& sprite1.yPosition < sprite2.yPosition + sprite2.height
-			&& sprite1.yPosition + sprite1.height > sprite2.yPosition;
-	}
-
-	function getRandomNumber(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
 	game = setInterval(function() {
