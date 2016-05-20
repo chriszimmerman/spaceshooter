@@ -26,6 +26,10 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var enemyProjectiles;
 	var explosions;
 
+	var gameMusic = new Audio("sounds/title_music.wav");
+	gameMusic.loop = true;
+	gameMusic.play();
+
 	function playStartScreen() {
 		background = new Background();
 		background.draw();
@@ -47,6 +51,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 
 		if(Key.isDown(Key.UP)) {
 			clearInterval(game);
+			gameMusic.pause();
 			initializeGame();
 		}
 	}
@@ -144,6 +149,8 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 			if(collides(projectile, enemy)) {
 				enemy.active = false;
 				projectile.active = false;
+				var sound = new Audio("sounds/enemy_explode.wav");
+				sound.play();
 				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
 				score++;
 				enemy = new Enemy();
@@ -153,6 +160,8 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		enemyProjectiles.forEach(function(projectile) {
 			if(collides(projectile, ship) && ship.active) {
 				ship.active = false;
+				var sound = new Audio("sounds/ship_explode.wav");
+				sound.play();
 				explosions.push(new Explosion(ship.xPosition, ship.yPosition));
 				gameOver = true;
 			}

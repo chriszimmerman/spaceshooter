@@ -50,6 +50,9 @@ var Enemy = class {
 		};
 
 		this.shoot = function() {
+			var sound = new Audio("sounds/enemy_fire.wav");
+			sound.play();
+
 			var xOffset = 15;
 			var yOffset = 20;
 			return new Projectile(this.xPosition + xOffset, this.yPosition + yOffset, Direction.DOWN, Color.RED);
