@@ -26,9 +26,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var enemyProjectiles;
 	var explosions;
 
-	var gameMusic = new Audio("sounds/title_music.wav");
-	gameMusic.loop = true;
-	gameMusic.play();
+	var gameMusic; 
 
 	function playStartScreen() {
 		background = new Background();
@@ -51,7 +49,8 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 
 		if(Key.isDown(Key.UP)) {
 			clearInterval(game);
-			gameMusic.pause();
+			pauseSong();
+			playSong("game_music");
 			initializeGame();
 		}
 	}
@@ -144,13 +143,17 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		return projectiles.filter(function(p) { return p.active; });
 	}
 
+	function playSoundEffect(soundEffectName) {
+			var sound = new Audio("sounds/" + soundEffectName + ".wav");
+			sound.play();
+	}
+
 	function handleCollisions() {
 		playerProjectiles.forEach(function(projectile) {
 			if(collides(projectile, enemy)) {
 				enemy.active = false;
 				projectile.active = false;
-				var sound = new Audio("sounds/enemy_explode.wav");
-				sound.play();
+				playSoundEffect("enemy_explode");
 				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
 				score++;
 				enemy = new Enemy();
@@ -160,8 +163,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		enemyProjectiles.forEach(function(projectile) {
 			if(collides(projectile, ship) && ship.active) {
 				ship.active = false;
-				var sound = new Audio("sounds/ship_explode.wav");
-				sound.play();
+				playSoundEffect("ship_explode");
 				explosions.push(new Explosion(ship.xPosition, ship.yPosition));
 				gameOver = true;
 			}
@@ -236,9 +238,21 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		context.fillText("Press Up to restart", 80, 250);
 	}
 
+	function playSong(songName) {
+		gameMusic = new Audio("sounds/" + songName + ".wav");
+		gameMusic.loop = true;
+		gameMusic.play();
+	}
+
+	function pauseSong() {
+		gameMusic.pause();
+	}
+
 	game = setInterval(function() {
 		playStartScreen();
 	}, 1000 / FPS);
+
+	playSong("title_music");
 });
 
 requirejs.config({
