@@ -4,91 +4,91 @@ var canvasHeight = canvas.getAttribute("height");
 var context = canvas.getContext("2d");
 
 require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
-	var FPS = 30;
-	var game;
-	var gameOver;
-	var score;
+  var FPS = 30;
+  var game;
+  var gameOver;
+  var score;
   var highScore;
-	
-	var drawEnemyExplosion;
-	var drawShipExplosion;
 
-	var framesSinceShipLastFired;
-	var framesSinceEnemyLastFired;
-	var shipFireThreshold; 
-	var minEnemyWaitTime;
-	var maxEnemyWaitTime;
-	var enemyFireThreshold;
+  var drawEnemyExplosion;
+  var drawShipExplosion;
 
-	var background;
-	var ship;
-	var enemy;
-	var playerProjectiles;
-	var enemyProjectiles;
-	var explosions;
+  var framesSinceShipLastFired;
+  var framesSinceEnemyLastFired;
+  var shipFireThreshold; 
+  var minEnemyWaitTime;
+  var maxEnemyWaitTime;
+  var enemyFireThreshold;
 
-	var gameMusic; 
+  var background;
+  var ship;
+  var enemy;
+  var playerProjectiles;
+  var enemyProjectiles;
+  var explosions;
 
-	function playStartScreen() {
-		background = new Background();
-		background.draw();
-		context.font = "50px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("Space Shooter", 35, 100);
-		context.font = "30px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("Press Up to start", 80, 140);
+  var gameMusic; 
 
-		var titleShip = new Ship();
-		titleShip.xPosition = canvasWidth / 2 - titleShip.width / 2;
-		titleShip.yPosition = canvasHeight / 2 - titleShip.height / 2;
-		titleShip.draw();
+  function playStartScreen() {
+    background = new Background();
+    background.draw();
+    context.font = "50px Arial";
+    context.fillStyle = "#FFFFFF";
+    context.fillText("Space Shooter", 35, 100);
+    context.font = "30px Arial";
+    context.fillStyle = "#FFFFFF";
+    context.fillText("Press Up to start", 80, 140);
 
-		printControlInstruction("Spacebar - shoot", 80, 270);
-		printControlInstruction("Left arrow - move left", 80, 300);
-		printControlInstruction("Right arrow - move right", 80, 330);
+    var titleShip = new Ship();
+    titleShip.xPosition = canvasWidth / 2 - titleShip.width / 2;
+    titleShip.yPosition = canvasHeight / 2 - titleShip.height / 2;
+    titleShip.draw();
 
-		if(Key.isDown(Key.UP)) {
-			clearInterval(game);
-			pauseSong();
-			playSong("game_music");
-			initializeGame();
-		}
-	}
+    printControlInstruction("Spacebar - shoot", 80, 270);
+    printControlInstruction("Left arrow - move left", 80, 300);
+    printControlInstruction("Right arrow - move right", 80, 330);
 
-	function printControlInstruction(text, xPosition, yPosition) {
-		context.font = "20px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText(text, xPosition, yPosition);
-	}
+    if(Key.isDown(Key.UP)) {
+      clearInterval(game);
+      pauseSong();
+      playSong("game_music");
+      initializeGame();
+    }
+  }
 
-	function initializeGame() {
-		gameOver = false;
-		score = 0;
+  function printControlInstruction(text, xPosition, yPosition) {
+    context.font = "20px Arial";
+    context.fillStyle = "#FFFFFF";
+    context.fillText(text, xPosition, yPosition);
+  }
+
+  function initializeGame() {
+    gameOver = false;
+    score = 0;
     initializeHighScore();
 
-		drawEnemyExplosion = false;
-		drawShipExplosion = false;
+    drawEnemyExplosion = false;
+    drawShipExplosion = false;
 
-		framesSinceShipLastFired = 0;
-		framesSinceEnemyLastFired = 0;
-		shipFireThreshold = 20; 
-		minEnemyWaitTime = 5;
-		maxEnemyWaitTime = 20;
-		enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
+    framesSinceShipLastFired = 0;
+    framesSinceEnemyLastFired = 0;
+    shipFireThreshold = 20; 
+    minEnemyWaitTime = 5;
+    maxEnemyWaitTime = 20;
+    enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
 
-		background = new Background();
-		ship = new Ship();
-		enemy = new Enemy();
-		playerProjectiles = [];
-		enemyProjectiles = [];
-		explosions = [];
+    background = new Background();
+    ship = new Ship();
+    enemy = new Enemy();
+    playerProjectiles = [];
+    enemyProjectiles = [];
+    explosions = [];
 
-		game = setInterval(function() {
-			update();
-			draw();
-		}, 1000 / FPS);
-	}
+    game = setInterval(function() {
+      update();
+      draw();
+    }, 1000 / FPS);
+  }
 
   function initializeHighScore() {
     if(localStorage.highScore) {
@@ -100,204 +100,204 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
     }
   }
 
-	function update() {
-		updateShip();
-		updateEnemy();
-		playerProjectiles = updateProjectiles(playerProjectiles);
-		enemyProjectiles = updateProjectiles(enemyProjectiles);
-		handleCollisions();
-		explosions = updateExplosions(explosions);
-		checkForGameRestart();
-	}
+  function update() {
+    updateShip();
+    updateEnemy();
+    playerProjectiles = updateProjectiles(playerProjectiles);
+    enemyProjectiles = updateProjectiles(enemyProjectiles);
+    handleCollisions();
+    explosions = updateExplosions(explosions);
+    checkForGameRestart();
+  }
 
-	function updateShip() {
-		if(ship.active) {
-			if(Key.isDown(Key.RIGHT)) {
-				ship.moveRight();
-			}
-			
-			if(Key.isDown(Key.LEFT)) {
-				ship.moveLeft();
-			}
+  function updateShip() {
+    if(ship.active) {
+      if(Key.isDown(Key.RIGHT)) {
+        ship.moveRight();
+      }
 
-			if(Key.isDown(Key.SPACE)) {
-				if(framesSinceShipLastFired > shipFireThreshold) {
-					playerProjectiles.push(ship.shoot());
-					framesSinceShipLastFired = 0;
-				}
-			}
+      if(Key.isDown(Key.LEFT)) {
+        ship.moveLeft();
+      }
 
-			framesSinceShipLastFired++;
-		}
+      if(Key.isDown(Key.SPACE)) {
+        if(framesSinceShipLastFired > shipFireThreshold) {
+          playerProjectiles.push(ship.shoot());
+          framesSinceShipLastFired = 0;
+        }
+      }
 
-		ship.clamp();
-	}
+      framesSinceShipLastFired++;
+    }
 
-	function updateEnemy() {
-		if(enemy.active){
-			enemy.move();
+    ship.clamp();
+  }
 
-			if(framesSinceEnemyLastFired > enemyFireThreshold) {
-				enemyProjectiles.push(enemy.shoot());
-				enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
-				framesSinceEnemyLastFired = 0;
-			}
+  function updateEnemy() {
+    if(enemy.active){
+      enemy.move();
 
-			framesSinceEnemyLastFired++;
-		}
-	}
+      if(framesSinceEnemyLastFired > enemyFireThreshold) {
+        enemyProjectiles.push(enemy.shoot());
+        enemyFireThreshold = getRandomNumber(minEnemyWaitTime, maxEnemyWaitTime);
+        framesSinceEnemyLastFired = 0;
+      }
 
-	function updateProjectiles(projectiles) {
-		projectiles.forEach(function(projectile) {
-			projectile.update();
-		});
+      framesSinceEnemyLastFired++;
+    }
+  }
 
-		return projectiles.filter(function(p) { return p.active; });
-	}
+  function updateProjectiles(projectiles) {
+    projectiles.forEach(function(projectile) {
+      projectile.update();
+    });
 
-	function playSoundEffect(soundEffectName) {
-			var sound = new Audio("sounds/" + soundEffectName + ".wav");
-			sound.play();
-	}
+    return projectiles.filter(function(p) { return p.active; });
+  }
 
-	function handleCollisions() {
-		playerProjectiles.forEach(function(projectile) {
-			if(collides(projectile, enemy)) {
-				enemy.active = false;
-				projectile.active = false;
-				playSoundEffect("enemy_explode");
-				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
-				score++;
+  function playSoundEffect(soundEffectName) {
+    var sound = new Audio("sounds/" + soundEffectName + ".wav");
+    sound.play();
+  }
+
+  function handleCollisions() {
+    playerProjectiles.forEach(function(projectile) {
+      if(collides(projectile, enemy)) {
+        enemy.active = false;
+        projectile.active = false;
+        playSoundEffect("enemy_explode");
+        explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
+        score++;
 
         if(score > highScore) {
           highScore = score;
         }
-				enemy = new Enemy();
-			}
-		});
+        enemy = new Enemy();
+      }
+    });
 
-		enemyProjectiles.forEach(function(projectile) {
-			if(collides(projectile, ship) && ship.active) {
-				ship.active = false;
-				playSoundEffect("ship_explode");
-				explosions.push(new Explosion(ship.xPosition, ship.yPosition));
-				gameOver = true;
+    enemyProjectiles.forEach(function(projectile) {
+      if(collides(projectile, ship) && ship.active) {
+        ship.active = false;
+        playSoundEffect("ship_explode");
+        explosions.push(new Explosion(ship.xPosition, ship.yPosition));
+        gameOver = true;
         if(highScore > localStorage.highScore) {
           saveNewHighScore();
         }
-			}
-		});
-	}
-
-	function collides(sprite1, sprite2) {
-		return sprite1.xPosition < sprite2.xPosition + sprite2.width 
-			&& sprite1.xPosition + sprite1.width > sprite2.xPosition
-			&& sprite1.yPosition < sprite2.yPosition + sprite2.height
-			&& sprite1.yPosition + sprite1.height > sprite2.yPosition;
-	}
-
-	function getRandomNumber(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
-
-	function updateExplosions(explosions) {
-		return explosions.filter(function(e) { return e.active; });
-	}
-
-	function checkForGameRestart() {
-		if(gameOver && Key.isDown(Key.UP)) {
-			clearInterval(game);
-			initializeGame();
-		}
-	}
-
-	function draw() {
-		context.clearRect(0, 0, canvasWidth, canvasHeight);
-		background.draw();
-
-		if(ship.active) {
-			ship.draw();
-		}
-
-		if(enemy.active) {
-			enemy.draw();
-		}
-		
-		playerProjectiles.forEach(function(projectile) {
-			projectile.draw();
-		});
-
-		enemyProjectiles.forEach(function(projectile) {
-			projectile.draw();
-		});
-
-		explosions.forEach(function(explosion) {
-			explosion.draw();
-		});
-
-		drawScore();
-    drawHighScore();
-
-		if(gameOver) {
-			drawGameOver();
-		}
-	}
-
-	function drawScore() {
-		context.font = "30px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("Score: " + score, 10, 30);
-	}
-
-  function drawHighScore() {
-		context.font = "30px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("High Score: " + highScore, 180, 30);
+      }
+    });
   }
 
-	function drawGameOver() {
-		context.font = "60px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("GAME OVER", 20, 220);
-		context.font = "30px Arial";
-		context.fillStyle = "#FFFFFF";
-		context.fillText("Press Up to restart", 80, 250);
-	}
+  function collides(sprite1, sprite2) {
+    return sprite1.xPosition < sprite2.xPosition + sprite2.width 
+      && sprite1.xPosition + sprite1.width > sprite2.xPosition
+      && sprite1.yPosition < sprite2.yPosition + sprite2.height
+      && sprite1.yPosition + sprite1.height > sprite2.yPosition;
+  }
+
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function updateExplosions(explosions) {
+    return explosions.filter(function(e) { return e.active; });
+  }
+
+  function checkForGameRestart() {
+    if(gameOver && Key.isDown(Key.UP)) {
+      clearInterval(game);
+      initializeGame();
+    }
+  }
+
+  function draw() {
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    background.draw();
+
+    if(ship.active) {
+      ship.draw();
+    }
+
+    if(enemy.active) {
+      enemy.draw();
+    }
+
+    playerProjectiles.forEach(function(projectile) {
+      projectile.draw();
+    });
+
+    enemyProjectiles.forEach(function(projectile) {
+      projectile.draw();
+    });
+
+    explosions.forEach(function(explosion) {
+      explosion.draw();
+    });
+
+    drawScore();
+    drawHighScore();
+
+    if(gameOver) {
+      drawGameOver();
+    }
+  }
+
+  function drawScore() {
+    context.font = "30px Arial";
+    context.fillStyle = "#FFFFFF";
+    context.fillText("Score: " + score, 10, 30);
+  }
+
+  function drawHighScore() {
+    context.font = "30px Arial";
+    context.fillStyle = "#FFFFFF";
+    context.fillText("High Score: " + highScore, 180, 30);
+  }
+
+  function drawGameOver() {
+    context.font = "60px Arial";
+    context.fillStyle = "#FFFFFF";
+    context.fillText("GAME OVER", 20, 220);
+    context.font = "30px Arial";
+    context.fillStyle = "#FFFFFF";
+    context.fillText("Press Up to restart", 80, 250);
+  }
 
   function saveNewHighScore(){
     localStorage.highScore = highScore;
   }
 
-	function playSong(songName) {
-		gameMusic = new Audio("sounds/" + songName + ".wav");
-		gameMusic.loop = true;
-		gameMusic.play();
-	}
+  function playSong(songName) {
+    gameMusic = new Audio("sounds/" + songName + ".wav");
+    gameMusic.loop = true;
+    gameMusic.play();
+  }
 
-	function pauseSong() {
-		gameMusic.pause();
-	}
+  function pauseSong() {
+    gameMusic.pause();
+  }
 
-	game = setInterval(function() {
-		playStartScreen();
-	}, 1000 / FPS);
+  game = setInterval(function() {
+    playStartScreen();
+  }, 1000 / FPS);
 
-	playSong("title_music");
+  playSong("title_music");
 });
 
 requirejs.config({
-	shim: {
-		'game': {
-			deps: ['ship', 'key', 'background', 'enemy', 'explosion']
-		},
-		'enemy': {
-			deps: ['projectile']
-		},
-		'ship': { 
-			deps: ['projectile']
-		},
-		'projectile': {
-			deps: ['direction', 'color']
-		}
-	}
+  shim: {
+    'game': {
+      deps: ['ship', 'key', 'background', 'enemy', 'explosion']
+    },
+    'enemy': {
+      deps: ['projectile']
+    },
+    'ship': { 
+      deps: ['projectile']
+    },
+    'projectile': {
+      deps: ['direction', 'color']
+    }
+  }
 });
