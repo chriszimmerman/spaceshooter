@@ -8,6 +8,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	var game;
 	var gameOver;
 	var score;
+  var highScore;
 	
 	var drawEnemyExplosion;
 	var drawShipExplosion;
@@ -64,7 +65,8 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 	function initializeGame() {
 		gameOver = false;
 		score = 0;
-		
+    initializeHighScore();
+
 		drawEnemyExplosion = false;
 		drawShipExplosion = false;
 
@@ -87,6 +89,16 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 			draw();
 		}, 1000 / FPS);
 	}
+
+  function initializeHighScore() {
+    if(localStorage.highScore) {
+      highScore = localStorage.highScore
+    }
+    else {
+      localStorage.highScore = 0;
+      highScore = 0;
+    }
+  }
 
 	function update() {
 		updateShip();
@@ -156,6 +168,10 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 				playSoundEffect("enemy_explode");
 				explosions.push(new Explosion(enemy.xPosition, enemy.yPosition));
 				score++;
+
+        if(score > highScore) {
+          highScore = score;
+        }
 				enemy = new Enemy();
 			}
 		});
@@ -166,6 +182,9 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 				playSoundEffect("ship_explode");
 				explosions.push(new Explosion(ship.xPosition, ship.yPosition));
 				gameOver = true;
+        if(highScore > localStorage.highScore) {
+          saveNewHighScore();
+        }
 			}
 		});
 	}
@@ -217,6 +236,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		});
 
 		drawScore();
+    drawHighScore();
 
 		if(gameOver) {
 			drawGameOver();
@@ -229,6 +249,12 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		context.fillText("Score: " + score, 10, 30);
 	}
 
+  function drawHighScore() {
+		context.font = "30px Arial";
+		context.fillStyle = "#FFFFFF";
+		context.fillText("High Score: " + highScore, 180, 30);
+  }
+
 	function drawGameOver() {
 		context.font = "60px Arial";
 		context.fillStyle = "#FFFFFF";
@@ -237,6 +263,10 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 		context.fillStyle = "#FFFFFF";
 		context.fillText("Press Up to restart", 80, 250);
 	}
+
+  function saveNewHighScore(){
+    localStorage.highScore = highScore;
+  }
 
 	function playSong(songName) {
 		gameMusic = new Audio("sounds/" + songName + ".wav");
