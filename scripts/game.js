@@ -33,10 +33,10 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
     background = new Background();
     background.draw();
     context.font = "50px Arial";
-    context.fillStyle = "#FFFFFF";
+    context.fillStyle = Color.WHITE;
     context.fillText("Space Shooter", 35, 100);
     context.font = "30px Arial";
-    context.fillStyle = "#FFFFFF";
+    context.fillStyle = Color.WHITE;
     context.fillText("Press Up to start", 80, 140);
 
     var titleShip = new Ship();
@@ -58,7 +58,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 
   function printControlInstruction(text, xPosition, yPosition) {
     context.font = "20px Arial";
-    context.fillStyle = "#FFFFFF";
+    context.fillStyle = Color.WHITE;
     context.fillText(text, xPosition, yPosition);
   }
 
@@ -245,22 +245,22 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 
   function drawScore() {
     context.font = "30px Arial";
-    context.fillStyle = "#FFFFFF";
+    context.fillStyle = Color.WHITE;
     context.fillText("Score: " + score, 10, 30);
   }
 
   function drawHighScore() {
     context.font = "30px Arial";
-    context.fillStyle = "#FFFFFF";
+    context.fillStyle = Color.WHITE;
     context.fillText("High Score: " + highScore, 180, 30);
   }
 
   function drawGameOver() {
     context.font = "60px Arial";
-    context.fillStyle = "#FFFFFF";
+    context.fillStyle = Color.WHITE;
     context.fillText("GAME OVER", 20, 220);
     context.font = "30px Arial";
-    context.fillStyle = "#FFFFFF";
+    context.fillStyle = Color.WHITE;
     context.fillText("Press Up to restart", 80, 250);
   }
 

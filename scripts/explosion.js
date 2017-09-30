@@ -21,7 +21,7 @@ var Explosion = class {
         context.globalAlpha = 0.05 * this.explodeFrame;
         context.beginPath();
         context.arc(this.centerX(), this.centerY(), this.explodeFrame, 0, 2 * Math.PI);
-        context.fillStyle = "#FF0000";
+        context.fillStyle = Color.RED;
         context.fill();
         context.restore();
         this.explodeFrame--;

@@ -9,7 +9,7 @@ var Ship = class {
 
     this.draw = function() {
       context.beginPath();
-      context.fillStyle = "#ff8d00";
+      context.fillStyle = Color.ORANGE;
       context.rect(this.xPosition + 15, this.yPosition, 10, 40);
       context.fill();
       context.rect(this.xPosition, this.yPosition + 15, 40, 20);

@@ -17,13 +17,13 @@ var Enemy = class {
 
     this.draw = function() {
       context.beginPath();
-      context.fillStyle = "#1cd046";
+      context.fillStyle = Color.GREEN;
       context.rect(this.xPosition + 10, this.yPosition, 20, 40);
       context.fill();
       context.rect(this.xPosition, this.yPosition + 10, 40, 20);
       context.fill();
       context.beginPath();
-      context.fillStyle = "#000000";
+      context.fillStyle = Color.BLACK;
       context.rect(this.xPosition + 15, this.yPosition + 15, 10, 10);
       context.fill();
     };
