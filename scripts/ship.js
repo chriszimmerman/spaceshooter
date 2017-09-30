@@ -4,7 +4,7 @@ var Ship = class {
     this.moveSpeed = 5;
     this.width = 40;
     this.height = 40;
-    this.xPosition = (canvasWidth / 2) - (40 / 2);
+    this.xPosition = (canvasWidth / 2) - (this.width / 2);
     this.yPosition = 320;
 
     this.draw = function() {
