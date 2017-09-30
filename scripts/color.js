@@ -1,4 +1,4 @@
 var Color = {
-	WHITE: "#FFFFFF",
-	RED: "#FF0000",
+  WHITE: "#FFFFFF",
+  RED: "#FF0000",
 };

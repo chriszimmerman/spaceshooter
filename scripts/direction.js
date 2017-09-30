@@ -1,4 +1,4 @@
 var Direction = {
-	UP: 0,
-	DOWN: 1,
+  UP: 0,
+  DOWN: 1,
 };
