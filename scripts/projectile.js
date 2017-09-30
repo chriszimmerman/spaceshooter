@@ -1,8 +1,8 @@
 var Projectile = class {
   constructor(xPosition, yPosition, direction, color) {
     var speed = 7;
-    this.active = true;
 
+    this.active = true;
     this.xPosition = xPosition;
     this.yPosition = yPosition;
     this.xVelocity = 0;
@@ -11,7 +11,7 @@ var Projectile = class {
     this.height = 10;
     this.color = color;
 
-    this.inBounds = function() {
+    this.isInBounds = function() {
       return this.xPosition >= 0 && this.xPosition <= canvasWidth &&
         this.yPosition >= 0 && this.yPosition <= canvasHeight;
     };
@@ -25,7 +25,7 @@ var Projectile = class {
       this.xPosition += this.xVelocity;
       this.yPosition += this.yVelocity;
 
-      this.active = this.active && this.inBounds();
+      this.active = this.active && this.isInBounds();
     };
   }
 }

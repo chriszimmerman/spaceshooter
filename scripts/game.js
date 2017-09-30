@@ -162,7 +162,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
 
   function handleCollisions() {
     playerProjectiles.forEach(function(projectile) {
-      if(collides(projectile, enemy)) {
+      if(spritesCollide(projectile, enemy)) {
         enemy.active = false;
         projectile.active = false;
         playSoundEffect("enemy_explode");
@@ -177,7 +177,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
     });
 
     enemyProjectiles.forEach(function(projectile) {
-      if(collides(projectile, ship) && ship.active) {
+      if(spritesCollide(projectile, ship) && ship.active) {
         ship.active = false;
         playSoundEffect("ship_explode");
         explosions.push(new Explosion(ship.xPosition, ship.yPosition));
@@ -189,7 +189,7 @@ require(["ship", "key", "background", "enemy", "explosion"], function(a, b, c){
     });
   }
 
-  function collides(sprite1, sprite2) {
+  function spritesCollide(sprite1, sprite2) {
     return sprite1.xPosition < sprite2.xPosition + sprite2.width 
       && sprite1.xPosition + sprite1.width > sprite2.xPosition
       && sprite1.yPosition < sprite2.yPosition + sprite2.height
