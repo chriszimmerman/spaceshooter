@@ -8,4 +8,3 @@ var Background = class {
 		}
 	}
 };
-//test
